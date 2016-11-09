@@ -1,3 +1,5 @@
+import math
+
 def isOperation(elem):
 	if elem == '+' or elem == '-' or elem == '*' or elem == '/' or elem == '(' or elem == ')' or elem == '\n':
 		return True
@@ -5,30 +7,39 @@ def isOperation(elem):
 		return False	
 
 def makeOperation(operation):
-	right = result_str.pop()
-	left = result_str.pop()	
-	if operation == '+':
-		result_str.append(right + left)
-	elif operation == '-':
-		result_str.append(left - right)
-	elif operation == '*':
-		result_str.append(left * right)
-	elif operation == '/':
-		result_str.append(left / right)
-
+	if priority(operation) > 3:
+		right = result_str.pop()
+		if operation == 'sin':
+			result_str.append(math.sin(right))
+		if operation == 'sqrt':
+			result_str.append(math.sqrt(right))
+	else:
+		right = result_str.pop()
+		left = result_str.pop()
+		if operation == '+':
+			result_str.append(right + left)
+		elif operation == '-':
+			result_str.append(left - right)
+		elif operation == '*':
+			result_str.append(left * right)
+		elif operation == '/':
+			result_str.append(left / right)
+	
 def priority (operation):
 	if operation in ('+', '-'):
 		return 1
 	elif operation in ('*', '/', '%'):
 		return 2
+	elif operation in ('sin', 'cos', 'sqrt'):
+		return 4
 	else:
 		return -1
 
 def printStacks():
-	print(result_str)
-	print(operations)
+	print("str= ", result_str)
+	print("ope= ", operations)
 
-input_str = '1 + 3 / 3 * 31 + 123 - 123 / 123 + 123 *3'
+input_str = '1*4+3.3/(3 + .3)*3*(sqrt(4))/(sin(0) + 1)'
 
 operations = []
 result_str = []
@@ -40,7 +51,10 @@ for elem in input_str:
 
 	if elem == '(':
 		if operand != '':
-			result_str.append(float(operand))
+			if operand.isalnum():
+				operations.append(operand)
+			else:
+				result_str.append(float(operand))
 			operand = ''
 		operations.append(elem)
 		printStacks()
@@ -49,8 +63,7 @@ for elem in input_str:
 		if operand != '':
 			result_str.append(float(operand))
 			operand = ''
-			printStacks()
-			print('CRASH')
+			printStacks()		
 		while operations[-1] != '(':
 			makeOperation(operations.pop())
 		operations.pop()
@@ -71,6 +84,8 @@ for elem in input_str:
 
 if (operand != ''):
 	result_str.append(float(operand))
+
+printStacks()
 		 
 while operations:
 	makeOperation(operations.pop())	
