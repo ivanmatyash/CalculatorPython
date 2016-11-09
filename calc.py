@@ -1,20 +1,30 @@
 import math
 
 def isOperation(elem):
-	if elem == '+' or elem == '-' or elem == '*' or elem == '/' or elem == '(' or elem == ')' or elem == '\n':
+	if elem == '+' or elem == '-' or elem == '*' or elem == '/' or elem == '(' or elem == ')' or elem == '^':
 		return True
 	else:
 		return False	
+
+def isFloat(number):
+	try:
+		a = float(number)
+		return True
+	except ValueError as e:
+		print "lel"
+		return False
 
 def makeOperation(operation):
 	if priority(operation) > 3:
 		right = result_str.pop()
 		if operation == 'sin':
 			result_str.append(math.sin(right))
-		if operation == 'sqrt':
+		elif operation == 'sqrt':
 			result_str.append(math.sqrt(right))
-		if operation == 'cos':
+		elif operation == 'cos':
 			result_str.append(math.cos(right))
+		elif operation == 'abs':
+			result_str.append(math.abs(right))
 	else:
 		right = result_str.pop()
 		left = result_str.pop()
@@ -26,11 +36,13 @@ def makeOperation(operation):
 			result_str.append(left * right)
 		elif operation == '/':
 			result_str.append(left / right)
+		elif operation == '^':
+			result_str.append(left ** right)
 	
 def priority (operation):
 	if operation in ('+', '-'):
 		return 1
-	elif operation in ('*', '/', '%'):
+	elif operation in ('*', '/', '%', '^'):
 		return 2
 	elif operation in ('sin', 'cos', 'sqrt'):
 		return 4
@@ -41,8 +53,8 @@ def printStacks():
 	print("str= ", result_str)
 	print("ope= ", operations)
 
-input_str = '1*4+3.3/(3 + .3)*3*(sqrt(4))/(cos(0) + 1)'
-
+#input_str = '(2 + sqrt(15) - 3 * 1/3)^5 + 1'
+input_str = '1*4+3.3/(3 + .3)*3(sqrt(4))/5(sin(0) + 1)'
 operations = []
 result_str = []
 
@@ -54,7 +66,11 @@ for elem in input_str:
 
 	if elem == '(':
 		if operand != '':
-			if operand.isalnum():
+			if isFloat(operand):
+				print "work!"
+				result_str.append(float(operand))
+				operations.append('*')
+			elif operand.isalnum():
 				operations.append(operand)
 			else:
 				result_str.append(float(operand))
