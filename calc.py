@@ -15,15 +15,17 @@ def isFloat(number):
 
 def makeOperation(operation):
 	if priority(operation) > 3:
-		right = result_str.pop()
-		if operation == 'sin':
+		right = result_str.pop()	
+		if operation == '@':
+			result_str.append(-1 * right)
+		elif operation == 'sin':
 			result_str.append(math.sin(right))
 		elif operation == 'sqrt':
 			result_str.append(math.sqrt(right))
 		elif operation == 'cos':
 			result_str.append(math.cos(right))
 		elif operation == 'abs':
-			result_str.append(math.abs(right))
+			result_str.append(abs(right))
 		elif operation == 'log10':
 			result_str.append(math.log10(right))
 		elif operation == '^':
@@ -48,9 +50,10 @@ def priority (operation):
 		return 1
 	elif operation in ('*', '/', '%'):
 		return 2
-	elif operation in ('sin','^', 'cos', 'sqrt', 'log10'):
-
+	elif operation in ('sin','^', 'cos', 'sqrt', 'log10', 'abs'):
 		return 4
+	elif operation in ('@'):
+		return 5
 	else:
 		return -1
 
@@ -63,6 +66,7 @@ operations = []
 result_str = []
 
 def calculate(input_str): 
+	maybeUnary = True
 	last_elem = None	
 	operand = ''
 	for elem in input_str:
@@ -89,6 +93,7 @@ def calculate(input_str):
 				operand = ''
 			operations.append(elem)
 			last_elem = elem
+			maybeUnary = True
 			continue
 		elif elem == ')':
 			if operand != '':
@@ -100,20 +105,31 @@ def calculate(input_str):
 				makeOperation(operations.pop())
 			operations.pop()
 			last_elem = elem
+			maybeUnary = False
 			continue
 		elif isOperation(elem):
 			if operand != '':
-			#	print ("OPERAND =" + operand)
+				#print ("OPERAND =" + operand)
 				result_str.append(float(operand))
 				operand = ''
+			if elem == '-' and maybeUnary:
+				operations.append('@')
+				#print("LOL")
+				continue
+				#makeOperation(operations.pop())	
 			while operations and priority(operations[-1]) >= priority(elem):
 				makeOperation(operations.pop())
 			
-			operations.append(elem)
+
+				
+			else:
+				operations.append(elem)
 			last_elem = elem
+			maybeUnary = True
 		else:
 			operand += elem
 			last_elem = elem
+			maybeUnary = False
 
 
 	if (operand != '' and operand != '\n'):
