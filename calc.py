@@ -139,9 +139,14 @@ def calculate(input_str):
 	result = result_str[0]
 	result_str.pop() 
 	return result
-
-input_file = open("input.txt", "rt")
+try:
+	input_file = open("input.txt", "rt")
+except Exception as e:
+	input_file.close()
 for str_fileTemp in input_file:
-	str_file = str_fileTemp.replace('//', '$')
-	print('{0} = {1}'.format(str_fileTemp[:-1], calculate(str_file)))
+	try:
+		str_file = str_fileTemp.replace('//', '$')
+		print('{0} = {1}'.format(str_fileTemp[:-1], calculate(str_file)))
+	except Exception as e:
+		print('{0} = error!'.format(str_fileTemp[:-1]))
 input_file.close()
