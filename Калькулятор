@@ -1,0 +1,11 @@
++ - * / // %
+e
+^
+abs sqrt log log10 cos sin acos asin atan hypot tan
+3(... == 3*(...
+.3 == 0.3
+
+def calc(str):
+	...
+	return result
+yauheni_stankevich@epam.com
